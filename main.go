@@ -9,6 +9,14 @@ import (
 	"strconv"
 )
 
+type IReturnMessage interface {
+	ReturnMessage([]string) []string
+}
+
+func DoReturnMessage(m IReturnMessage, message []string) []string {
+	return message
+}
+
 func main() {
 
 	if len(os.Args) < 2 {
@@ -21,7 +29,6 @@ func main() {
 		os.Exit(0)
 	} else {
 		colorText.Green("[+] Starting program...")
-		colorText.Disable()
 		url := os.Args[1]
 
 		list := readWordlist.ReadFile("wordlist.txt")
@@ -32,12 +39,15 @@ func main() {
 
 			req := request.Target{Url: url, Path: path}
 			resp, err := req.Action("GET", url, path)
+			returnSlice := []string{url, path, strconv.Itoa(resp.StatusCode)}
+
+			message := DoReturnMessage(&req, returnSlice)
 
 			if err != nil {
 				fmt.Println("Error:", err, "requesting to site:", url)
 			}
-			statusCode := strconv.Itoa(resp.StatusCode)
-			colorText.Green("Running: " + url + path + " | Code: " + statusCode)
+
+			colorText.White("Running: " + message[0] + message[1] + " | Code: " + message[2])
 
 		}
 	}

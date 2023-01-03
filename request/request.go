@@ -9,6 +9,10 @@ type Target struct {
 	Path string
 }
 
+func (t *Target) ReturnMessage(message []string) []string {
+	return message
+}
+
 func (t *Target) Action(method string, url string, path string) (*http.Response, error) {
 
 	var resp *http.Response
